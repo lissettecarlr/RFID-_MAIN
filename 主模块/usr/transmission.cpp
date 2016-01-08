@@ -11,10 +11,30 @@ Transmission::Transmission()
 	}
 }
 
-u8 *Transmission::C02_ModuleToUser(u8 data[20])
+u8 *Transmission::MAINToUser(u8 data_H,u8 data_L,u8 adc,u32 moduleNO,u8 type)
 {
-	data[1]=0xaa;
-	return data;
+	//头
+	ModuleToUser[0]=0xff;
+	ModuleToUser[1]=0xaa;
+	//设备号
+	ModuleToUser[2]=moduleNO>>24;
+	ModuleToUser[3]=moduleNO>>16;
+	ModuleToUser[4]=moduleNO>>8;
+	ModuleToUser[5]=moduleNO;
+	//数据类型
+	ModuleToUser[6]=type; //表示二氧化碳
+ 	//数据
+	ModuleToUser[7]=data_H;
+	ModuleToUser[8]=data_L;
+	//电压值
+	ModuleToUser[9]=adc;
+	
+	ModuleToUser[19]=0;
+	for(int i=0;i<19;i++)
+	{
+		ModuleToUser[19]+=ModuleToUser[i];
+	}
+	return ModuleToUser;
 }
 
 //得到上位机命令

@@ -171,49 +171,43 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>30</LineNumber>
+          <LineNumber>69</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134222930</Address>
+          <Address>134223664</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>F:\study\RFID璇捐\usr\main.cpp</Filename>
+          <Filename>F:\study\RFID璇捐\module_main\usr\main.cpp</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\\../usr/main.cpp\30</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>36</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134222954</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>F:\study\RFID璇捐\usr\main.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\\../usr/main.cpp\36</Expression>
+          <Expression>\\mainmodule\../usr/main.cpp\69</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow2>
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>CO2.ReceiveBufferSize()</ItemText>
+          <ItemText>sum</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>a</ItemText>
+          <ItemText>datatemp</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>CO2.ReceiveBufferSize()</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>a</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
           <WinNumber>2</WinNumber>
           <ItemText>rve</ItemText>
         </Ww>
@@ -224,9 +218,9 @@
       <DebugFlag>
         <trace>0</trace>
         <periodic>1</periodic>
-        <aLwin>1</aLwin>
+        <aLwin>0</aLwin>
         <aCover>0</aCover>
-        <aSer1>1</aSer1>
+        <aSer1>0</aSer1>
         <aSer2>0</aSer2>
         <aPa>0</aPa>
         <viewmode>1</viewmode>

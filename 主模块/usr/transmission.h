@@ -11,7 +11,7 @@ class Transmission{
 		u8 command[8];
 	public:
 		Transmission();
-		u8 *C02_ModuleToUser(u8 data[20]);
+		u8 *MAINToUser(u8 data_H,u8 data_L,u8 adc,u32 moduleNO,u8 type);
 	
 		u8 CommandParsing(u8 command[8]);
 	
