@@ -170,12 +170,12 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>0</Capability>
-            <DriverSelection>-1</DriverSelection>
+            <Capability>1</Capability>
+            <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -437,6 +437,31 @@
               <FileName>ADC.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\driver\ADC.h</FilePath>
+            </File>
+            <File>
+              <FileName>MHZ14.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\driver\MHZ14.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>MHZ14.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\driver\MHZ14.h</FilePath>
+            </File>
+            <File>
+              <FileName>MFRC522.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\driver\MFRC522.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>MFRC522.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\driver\MFRC522.h</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\driver\GPIO.cpp</FilePath>
             </File>
           </Files>
         </Group>
