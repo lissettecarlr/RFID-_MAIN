@@ -68,11 +68,31 @@ u8 *Transmission::CmmandTomodule(u8 state,u32 moduleNumber)
 	command[3]=(u8)(moduleNumber>>16);
 	command[4]=(u8)(moduleNumber>>8);
 	command[5]=(u8)(moduleNumber);
-	command[6]=0xaa;
+	command[6]=state;
 	command[7]=0;
 	for(u8 i=0;i<7;i++)
 	{
 		command[7]+=command[i];
 	}
 	return command;
+}
+
+u8 *Transmission::registered(u8 *basic_information,unsigned char *str1,unsigned char *str2)
+{
+	info[0]=0xff;
+	info[1]=0x00;
+	info[2]=*(basic_information+0);
+	info[3]=*(basic_information+1);
+	info[4]=*(basic_information+2);
+	info[5]=*(basic_information+3);
+	info[6]=*(basic_information+4);
+	info[7]=*(basic_information+5);
+	for(u8 i=0;i<16;i++)
+		info[i+8]=*(str1+i);
+	for(u8 i=0;i<16;i++)
+		info[i+24]=*(str2+i);
+	
+	return info;
+	
+	
 }

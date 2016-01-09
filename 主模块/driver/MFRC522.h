@@ -4,122 +4,51 @@
 
 
 
-/********************************************Configuration***********************************************************/
-
-////////////////////////define what ways to communicate with MFRC522 module, One of them or both of them
-						#define MFRC522_USE_USART       //uncomment ir if use USART ot communicate with MFRC522 
-//						#define MFRC522_USE_SPI         //uncomment it if use SPI to communicate with MFRC522
-
-//////////////////////// buffer size
-						#define MFRC522_MaxReceiveLen 18   //用来当缓冲区和临时变量使用的
-
-/*********************************************************************************************************************/
-
-/////////////////////////////////////
-///include files and module
-////////////////////////////////////
-# include "GPIO.h"
+#define MFRC522_MaxReceiveLen 18   //用来当缓冲区和临时变量使用的
 # include "TaskManager.h"
+# include "USART.h"
 
-#ifdef MFRC522_USE_USART
-	# include "USART.h"
-#endif
-
-#ifdef MFRC522_USE_SPI
-	# include "SPI.h"
-#endif
 
 
 
 class MFRC522
 {
 private:
-	GPIO &mResetPin;
-	GPIO &mPctrlPin;
-	bool mUseSPI;
-#ifdef MFRC522_USE_USART
 	USART *mUsart;
-#endif
-#ifdef MFRC522_USE_SPI
-	SPI *mSPI;
-#endif
 
-
-	///////////////////////
-	///清MFRC522的寄存器位，即清掉mask中为1的位
-	///////////////////////
+	//位 清零
 	void ClearBitMask(unsigned char reg,unsigned char mask);
 
-	/////////////////////////
-	///设置MFRC522的寄存器的特定位，即把mask参数中的为1的位设置到reg中
-	////////////////////////
+	//位 置1
 	void SetBitMask(unsigned char reg,unsigned char mask);
-	
-	//////////////////////////
-	///PCD和PICC通信
-	//////////////////////////
+
+	//PCD和PICC通信
 	bool PcdComPicc(unsigned char Command,unsigned char *pInData,unsigned char InLenByte,
 	                                       unsigned char *pOutData, unsigned int  *pOutLenBit);
 
-	////////////////////////
-	///CRC16校验计算
-	////////////////////////
+	//CRC16校验计算
 	void CalulateCRC16(unsigned char *pIndata,unsigned char len,unsigned char *pOutData);
 	
 	
 	
 public:
 		
-	//////////////////
-	///写RC632寄存器
-	///@param address 要写的MFRC522寄存器地址
-	///@param value 写往寄存器的值
-	//////////////////
+	//写寄存器
 	bool WriteRawRC(unsigned char address, unsigned char value);
 	
-
-	//////////////////
-	///读RC632中某个寄存器的值
-	///@param address 要写的MFRC522寄存器地址
-	///@retval 返回的寄存器中的值
-	//////////////////
+	//读寄存器的值
 	unsigned char ReadRawRC(unsigned char address);
 	
+	//构造函数（使用USART连接）
+	MFRC522(USART *usart);
+
+	//初始化
+	void PCDInit();
 	
-
-#ifdef MFRC522_USE_USART
-	/////////////////////
-	///构造函数（使用USART连接）
-	///@param usart 与MFRC522连接的串口对象的地址
-	///@param reset 与MFRC522连接的复位接口对象的地址，默认没有，既可以悬空
-	///@param reset 与MFRC522连接的电源控制接口对象的地址，默认没有，既可以悬空
-	/////////////////////
-	MFRC522(USART *usart,GPIO *reset=0,GPIO *pctrl=0);
-#endif
-#ifdef MFRC522_USE_SPI
-	/////////////////////
-	///构造函数(使用SPI连接)
-	///@param spi 与MFRC522连接的SPI对象的地址
-	///@param reset 与MFRC522连接的复位接口对象的地址，默认没有，既可以悬空
-	///@param reset 与MFRC522连接的电源控制接口对象的地址，默认没有，既可以悬空
-	/////////////////////
-	MFRC522(SPI *spi,GPIO *reset=0,GPIO *pctrl=0);
-#endif
-
-	//////////////////////
-	///PCD复位，包括复位模块以及模块内的设备（天线）
-	///////////////////////
-	void PCDReset();
-	
-
-	//////////////////////////
-	///开启阅读器天线
-	//////////////////////////
+	//开启阅读器天线
 	void PcdAntennaOn();
 
-	//////////////////////////
-	///关闭阅读器天线
-	//////////////////////////
+	//关闭阅读器天线
 	void PcdAntennaOff();
 
 
@@ -130,7 +59,7 @@ public:
 	///                               MFRC522_PICC_REQALL 寻天线区内全部卡
 	///@param pTagType   存放寻到的卡片的类型（两个字节）
 	////////////////////
-	bool PcdRequest(unsigned char whichTag,unsigned char *pTagType);
+	bool FindCard(unsigned char whichTag,unsigned char *pTagType);
 	
 	///////////////////
 	///防冲撞寻卡号
@@ -182,25 +111,8 @@ public:
 	///命令卡片进入睡眠状态
 	///@retval 睡眠是否成功
 	////////////////////////
-	bool PcdHalt(void);
-/*	
-	////////////////////////
-	///修改PICC块中的值（加法、减法）
-	///@param dd_mode 模式    取值：
-	///                            MFRC522_PICC_DECREMENT（减法）
-	///                            MFRC522_PICC_INCREMENT（加法）
-	///@param addr PICC块地址
-	///@param pValue 值
-	////////////////////////
-	bool PcdValue(unsigned char dd_mode,unsigned char addr,unsigned char *pValue);
-*/
-/*
-	//////////////////////////
-	///备份块到其它块
-	//////////////////////////
-	bool PcdBakValue(unsigned char sourceaddr, unsigned char goaladdr);
-*/	
-	
+	bool CardHalt(void);
+
 	
 };
 
@@ -253,8 +165,6 @@ public:
 //MF522 FIFO长度定义
 /////////////////////////////////////////////////////////////////////
 #define DEF_FIFO_LENGTH       64                 //FIFO size=64byte
-
-
 
 
 

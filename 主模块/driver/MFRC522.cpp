@@ -1,41 +1,13 @@
 
 # include "MFRC522.h"
 
-
-MFRC522::MFRC522(USART *usart,GPIO *reset,GPIO *pctrl)
-:mResetPin(*reset),mPctrlPin(*pctrl),mUseSPI(false),mUsart(usart)
+MFRC522::MFRC522(USART *usart):mUsart(usart)
 {
-	
-	
 }
-#ifdef MFRC522_USE_SPI
-MFRC522::MFRC522(SPI *spi,GPIO *reset,GPIO *pctrl)
-:mResetPin(*reset),mPctrlPin(*pctrl),mUseSPI(true),mSPI(spi)
-{
-	
-	
-}
-#endif
 
-void MFRC522::PCDReset()
+void MFRC522::PCDInit()
 {
-//	if(&mPctrlPin!=0x000000)//使用了硬件电源控制
-//	{
-//		//打开电源控制
-//		mPctrlPin.SetLevel(0);
-//		
-//	}
-//	if(&mResetPin!=0)
-//	{
-//		//复位使能
-//		mResetPin.SetLevel(1);
-//		tskmgr.DelayUs(1);
-//		mResetPin.SetLevel(0);
-//		tskmgr.DelayUs(1);
-//		mResetPin.SetLevel(1);
-//		tskmgr.DelayUs(1);
-//	}
-	//向“启动/停止”寄存器写复位命令，即打开模拟电路、打开电源
+
 	WriteRawRC(MFRC522_CommandReg,MFRC522_PCD_RESETPHASE);
 	tskmgr.DelayMs(1);
 	WriteRawRC(MFRC522_ModeReg,0x3D);   //定义发送和接收的模式，和Mifare卡通讯，CRC初始值0x6363
@@ -56,8 +28,6 @@ bool MFRC522::WriteRawRC(unsigned char address, unsigned char value)
 {
 	double timeOut=tskmgr.Time();
 	u8 reteunval;	
-#ifdef MFRC522_USE_USART
-	
 		mUsart->ClearReceiveBuffer();
 		address = address&0x7F;//使用USART时使用
 		mUsart->SendData(&address,1);
@@ -70,8 +40,7 @@ bool MFRC522::WriteRawRC(unsigned char address, unsigned char value)
 		if(reteunval!=address)//返回的地址与发的不相同，错误
 			return false;
 		mUsart->SendData(&value,1);
-	
-#endif
+
 	return true;
 }
 
@@ -80,9 +49,6 @@ unsigned char MFRC522::ReadRawRC(unsigned char address)
 	double timeOut=tskmgr.Time();
 	unsigned char temp;
 	
-#ifdef MFRC522_USE_USART
-	if(!mUseSPI)
-	{
 		mUsart->ClearReceiveBuffer();
 		address = (address&0x7F)|0x80;
 		mUsart->SendData(&address,1);
@@ -93,20 +59,6 @@ unsigned char MFRC522::ReadRawRC(unsigned char address)
 		}
 		
 		mUsart->GetReceivedData(&temp,1);
-	}
-#endif
-#ifdef MFRC522_USE_SPI
-	if(mUseSPI)
-	{
-		mSPI->EnableSPI();
-		address = ((address<<1)&0x7E)|0x80;
-		if(!mSPI->ReadOrWriteByte(address,&temp))
-			return false;
-		if(!mSPI->ReadOrWriteByte(0,&temp))
-			return false;
-		mSPI->DisableSPI();
-	}
-#endif
 	return temp;
 }
 
@@ -137,7 +89,8 @@ void MFRC522::PcdAntennaOff()
 	ClearBitMask(MFRC522_TxControlReg,0x03);//停止发送13.56MHz的载波
 }
 
-bool MFRC522::PcdRequest(unsigned char whichTag,unsigned char *pTagType)
+
+bool MFRC522::FindCard(unsigned char whichTag,unsigned char *pTagType)
 {
 	bool status=false;unsigned int  unLen=0;      //存放接收到的数据的长度
 	unsigned char ucComMF522Buf[MFRC522_MaxReceiveLen];  //存放接收到的数据,这里不直接使用pTagType是保险，防止用户传入长度太短的数组，导致数组越界程序崩溃
@@ -159,7 +112,6 @@ bool MFRC522::PcdRequest(unsigned char whichTag,unsigned char *pTagType)
 
 	return status;
 }
-
 
 
 bool MFRC522::PcdComPicc(unsigned char Command,unsigned char *pDataToPicc,unsigned char toPiccLength,
@@ -185,7 +137,7 @@ bool MFRC522::PcdComPicc(unsigned char Command,unsigned char *pDataToPicc,unsign
        default:
          break;
     }
-   
+ 
     WriteRawRC(MFRC522_ComIEnReg,irqEn|0x80);//管脚IRQ上的信号与寄存器StatusReg的IRQ位的值相反
     ClearBitMask(MFRC522_ComIrqReg,0x80);    //中断标志，定义CommIRqReg寄存器中的屏蔽位置位
     WriteRawRC(MFRC522_CommandReg,MFRC522_PCD_IDLE);//设置为IDLE状态（模拟电路开启，MFR522唤醒，取消当前命令的执行，命令为0）
@@ -242,25 +194,12 @@ bool MFRC522::PcdComPicc(unsigned char Command,unsigned char *pDataToPicc,unsign
          }
          else//出错
             status = false;
-
-        
    }
    
 
    SetBitMask(MFRC522_ControlReg,0x80);           // stop timer now
    WriteRawRC(MFRC522_CommandReg,MFRC522_PCD_IDLE); //取消当前命令的执行
-   
-   if(!status)
-   {
-	 if(temp&0x08 /*|| (n & irqEn & 0x01)*/)//检测到碰撞(或者超时)
-	 {
-		 char collReg = ReadRawRC(MFRC522_CollReg);//读出碰撞检测的寄存器中的值
-		 collReg&=0x1F;//获取发生碰撞的位置
-		
-	 }	   
-   }
-   
-
+  
    return status;
 }
 
@@ -368,7 +307,7 @@ void MFRC522::CalulateCRC16(unsigned char *pIndata,unsigned char len,unsigned ch
 ///@param pSnr 卡片序列号，4字节
 ////////////////////////
 bool MFRC522::PcdAuthState(unsigned char auth_mode,unsigned char addr,
-				  unsigned char *pKey    ,unsigned char *pSnr)
+				  unsigned char *pKey,unsigned char *pSnr)
 {
 	char status;
     unsigned int  unLen;
@@ -459,7 +398,7 @@ bool MFRC522::PcdRead(unsigned char addr,unsigned char *pData)
 ///命令卡片进入睡眠状态
 ///@retval 睡眠是否成功
 ////////////////////////
-bool MFRC522::PcdHalt(void)
+bool MFRC522::CardHalt(void)
 {
    /* bool status;*/
     unsigned int  unLen;
@@ -473,99 +412,3 @@ bool MFRC522::PcdHalt(void)
 
     return true;
 }
-
-
-/*
-////////////////////////
-///修改PICC块中的值（加法、减法）
-///@param dd_mode 模式    取值：
-///                            MFRC522_PICC_DECREMENT（减法）
-///                            MFRC522_PICC_INCREMENT（加法）
-////////////////////////
-bool MFRC522::PcdValue(unsigned char dd_mode,unsigned char addr,unsigned char *pValue)
-{
-	char status;
-    unsigned int  unLen;
-    unsigned char i,ucComMF522Buf[MFRC522_MaxReceiveLen]; 
-    
-    ucComMF522Buf[0] = dd_mode;
-    ucComMF522Buf[1] = addr;
-    CalulateCRC16(ucComMF522Buf,2,&ucComMF522Buf[2]);
- 
-    status = PcdComPicc(MFRC522_PCD_TRANSCEIVE,ucComMF522Buf,4,ucComMF522Buf,&unLen);
-
-    if (!status || (unLen != 4) || ((ucComMF522Buf[0] & 0x0F) != 0x0A))
-       status = false;
-        
-    if (status)
-    {
-       // memcpy(ucComMF522Buf, pValue, 4);
-        for (i=0; i<16; i++)
-            ucComMF522Buf[i] = *(pValue+i);
-		
-        CalulateCRC16(ucComMF522Buf,4,&ucComMF522Buf[4]);
-        unLen = 0;
-        status = PcdComPicc(MFRC522_PCD_TRANSCEIVE,ucComMF522Buf,6,ucComMF522Buf,&unLen);
-    }
-    
-    if (status)
-    {
-        ucComMF522Buf[0] = MFRC522_PICC_TRANSFER;
-        ucComMF522Buf[1] = addr;
-        CalulateCRC16(ucComMF522Buf,2,&ucComMF522Buf[2]); 
-   
-        status = PcdComPicc(MFRC522_PCD_TRANSCEIVE,ucComMF522Buf,4,ucComMF522Buf,&unLen);
-
-        if (!status || (unLen != 4) || ((ucComMF522Buf[0] & 0x0F) != 0x0A))
-           status = false;
-    }
-    return status;
-}
-*/
-
-/*
-//////////////////////////
-///备份块到其它块
-//////////////////////////
-bool MFRC522::PcdBakValue(unsigned char sourceaddr, unsigned char goaladdr)
-{
-	bool status;
-    unsigned int  unLen;
-    unsigned char ucComMF522Buf[MFRC522_MaxReceiveLen]; 
-
-    ucComMF522Buf[0] = MFRC522_PICC_RESTORE;
-    ucComMF522Buf[1] = sourceaddr;
-    CalulateCRC16(ucComMF522Buf,2,&ucComMF522Buf[2]);
- 
-    status = PcdComPicc(MFRC522_PCD_TRANSCEIVE,ucComMF522Buf,4,ucComMF522Buf,&unLen);
-
-    if (!status || (unLen != 4) || ((ucComMF522Buf[0] & 0x0F) != 0x0A))
-    {   status = false;   }
-    
-    if (status)
-    {
-        ucComMF522Buf[0] = 0;
-        ucComMF522Buf[1] = 0;
-        ucComMF522Buf[2] = 0;
-        ucComMF522Buf[3] = 0;
-        CalulateCRC16(ucComMF522Buf,4,&ucComMF522Buf[4]);
- 
-        status = PcdComPicc(MFRC522_PCD_TRANSCEIVE,ucComMF522Buf,6,ucComMF522Buf,&unLen);
-    }
-    
-    ucComMF522Buf[0] = MFRC522_PICC_TRANSFER;
-    ucComMF522Buf[1] = goaladdr;
-
-    CalulateCRC16(ucComMF522Buf,2,&ucComMF522Buf[2]);
- 
-    status = PcdComPicc(MFRC522_PCD_TRANSCEIVE,ucComMF522Buf,4,ucComMF522Buf,&unLen);
-
-    if ((!status) || (unLen != 4) || ((ucComMF522Buf[0] & 0x0F) != 0x0A))
-    {   status = false;   }
-
-    return status;
-}
-*/
-	
-
-
