@@ -79,6 +79,8 @@ u8 *Transmission::CmmandTomodule(u8 state,u32 moduleNumber)
 
 u8 *Transmission::registered(u8 *basic_information,unsigned char *str1,unsigned char *str2)
 {
+	u8 temp = 8;
+	
 	info[0]=0xff;
 	info[1]=0x00;
 	info[2]=*(basic_information+0);
@@ -87,10 +89,11 @@ u8 *Transmission::registered(u8 *basic_information,unsigned char *str1,unsigned 
 	info[5]=*(basic_information+3);
 	info[6]=*(basic_information+4);
 	info[7]=*(basic_information+5);
-	for(u8 i=0;i<16;i++)
-		info[i+8]=*(str1+i);
-	for(u8 i=0;i<16;i++)
-		info[i+24]=*(str2+i);
+	
+	for(u8 i=10;i<16;i++)  
+		info[temp++]=*(str1+i);  // 
+	for(u8 i=10;i<16;i++)   
+		info[temp++]=*(str2+i);
 	
 	return info;
 	

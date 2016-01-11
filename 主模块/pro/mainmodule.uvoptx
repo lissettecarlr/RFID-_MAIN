@@ -171,98 +171,50 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>128</LineNumber>
+          <LineNumber>91</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134225878</Address>
+          <Address>134221568</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>F:\study\RFID璇捐\module_main\usr\main.cpp</Filename>
+          <Filename>F:\study\RFID璇捐\module_main\usr\transmission.cpp</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\\../usr/main.cpp\128</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>131</LineNumber>
+          <LineNumber>93</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134225896</Address>
+          <Address>134221592</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>F:\study\RFID璇捐\module_main\usr\main.cpp</Filename>
+          <Filename>F:\study\RFID璇捐\module_main\usr\transmission.cpp</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\\../usr/main.cpp\131</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>136</LineNumber>
+          <LineNumber>92</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134225924</Address>
+          <Address>134221572</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>F:\study\RFID璇捐\module_main\usr\main.cpp</Filename>
+          <Filename>F:\study\RFID璇捐\module_main\usr\transmission.cpp</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\\../usr/main.cpp\136</Expression>
-        </Bp>
-        <Bp>
-          <Number>3</Number>
-          <Type>0</Type>
-          <LineNumber>132</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134225906</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>F:\study\RFID璇捐\module_main\usr\main.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\\../usr/main.cpp\132</Expression>
-        </Bp>
-        <Bp>
-          <Number>4</Number>
-          <Type>0</Type>
-          <LineNumber>126</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134225876</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>F:\study\RFID璇捐\module_main\usr\main.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\\../usr/main.cpp\126</Expression>
-        </Bp>
-        <Bp>
-          <Number>5</Number>
-          <Type>0</Type>
-          <LineNumber>119</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134225862</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>F:\study\RFID璇捐\module_main\usr\main.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\mainmodule\../usr/main.cpp\119</Expression>
+          <Expression></Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow2>

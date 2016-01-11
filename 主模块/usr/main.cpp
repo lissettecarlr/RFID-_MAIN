@@ -25,21 +25,24 @@ u8 namepassword[33]={0x41,0x54,0x2B,0x43,0x57,0x53,0x41,0x50,0x3D,0x22,0x46,0x5A
 					0x2C,0x22,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x30,0x22,0x2C,0x35,0x2C,0x33,0x0D,0x0A};
 u8 Command1[13]={0x41,0x54,0x2B,0x43,0x49,0x50,0x4D,0x55,0x58,0x3D,0x31,0x0D,0x0A}; //设置多路连接
 //设置IP地址为192.168.1.1
-//u8 setIP[]={41 54 2B 43 49 50 41 50 3D 22 31 39 32 2E 31 36 38 2E 31 2E 31 22 0D 0A };
+u8 setIP[]={0x41,0x54,0x2B,0x43,0x49,0x50,0x41,0x50,0x3D,0x22,0x31,0x39,0x32,0x2E,0x31,0x36,0x38,0x2E,0x31,0x2E,0x31,0x22,0x0D,0x0A};
 //开启服务器模式 端口 8080
 u8 Command2[21]={0x41,0x54,0x2B,0x43,0x49,0x50,0x53,0x45,0x52,0x56,0x45,0x52,0x3D,0x31,0x2C,0x38,0x30,0x38,0x30,0x0D,0x0A};
 //发送指令
 u8 Command3[17]={0x41,0x54,0x2B,0x43,0x49,0x50,0x53,0x45,0x4E,0x44,0x3D,0x30,0x2C,0x32,0x30,0x0D,0x0A};
 //取消回传
 u8 CLOSS[6]={0x41,0x54,0x45,0x30,0x0D,0x0A};
+/*END***************************************************************************************************************/
 
 
-u8 a[5]={0};
 
 bool equipment_confirm(u8 *info);
 
+
 //全局变量
 u32 equipment[10];  //用于保存设备号
+u8 a[5]={0};//TEST
+
 
 int main()
 {
@@ -105,7 +108,7 @@ int main()
 		    WIFI.SendData(Command3,17);
 	        tskmgr.DelayMs(100);
 			WIFI.ClearSendBuffer();
-			WIFI.SendData(packgroup.MAINToUser(datatemp[5],datatemp[6],0xaa,moduleNo,datatemp[4]),20);
+			WIFI.SendData(packgroup.MAINToUser(datatemp[5],datatemp[6],datatemp[7],moduleNo,datatemp[4]),20);
 			tskmgr.DelayMs(100); 
 			  
 			WIFI.ClearReceiveBuffer();//清除接收缓存
@@ -141,18 +144,13 @@ int main()
 						if(temp_cmd==0XAA)//如果命令是注册
 						{
 							//读取RFID 将结果给上位机*********************************************
-//						    WIFI.SendData(Command3,17);
-//							tskmgr.DelayMs(100);
-//							WIFI.ClearSendBuffer();
-//							WIFI.SendData(a,5);
-//							DATA_COM<<"11111";	
 							double in_time;
 							in_time=tskmgr.Time();
 							rfid.PCDInit();
 							while(1)
 							{							
 								tskmgr.DelayMs(500);
-								if(tskmgr.Time()-in_time>=60)  //60秒读取等待
+								if(tskmgr.Time()-in_time>=20)  //60秒读取等待
 								{
 									//返回结束
 									break;
@@ -178,14 +176,8 @@ int main()
 										    WIFI.SendData(Command3,17);
 											tskmgr.DelayMs(100);
 											WIFI.ClearSendBuffer();
-											WIFI.SendData(packgroup.registered(basic_information,sensor,version),20);//打包发送	WIFI.SendData(a,6);
-												
+											WIFI.SendData(packgroup.registered(basic_information,sensor,version),20);//打包发送	WIFI.SendData(a,6);												
 											tskmgr.DelayMs(500);//这里必须保证充足的延时才能发送下一半
-											WIFI.SendData(Command3,17);
-											tskmgr.DelayMs(100);
-											WIFI.ClearSendBuffer();
-											WIFI.SendData(packgroup.registered(basic_information,sensor,version)+20,20);//打包发送	WIFI.SendData(a,6);
-											tskmgr.DelayMs(100);
 											
 										}
 											

@@ -7,8 +7,7 @@ MFRC522::MFRC522(USART *usart):mUsart(usart)
 
 void MFRC522::PCDInit()
 {
-
-	WriteRawRC(MFRC522_CommandReg,MFRC522_PCD_RESETPHASE);
+	WriteRawRC(MFRC522_CommandReg,MFRC522_PCD_RESETPHASE); //想启动寄存器写入复位命令
 	tskmgr.DelayMs(1);
 	WriteRawRC(MFRC522_ModeReg,0x3D);   //定义发送和接收的模式，和Mifare卡通讯，CRC初始值0x6363
     WriteRawRC(MFRC522_TReloadRegL,30); //定时器重装值
@@ -23,7 +22,7 @@ void MFRC522::PCDInit()
 	tskmgr.DelayMs(1);
 }
 
-
+//发送一个地址，得到一个返回地址，在发送数据位
 bool MFRC522::WriteRawRC(unsigned char address, unsigned char value)
 {
 	double timeOut=tskmgr.Time();
@@ -44,20 +43,20 @@ bool MFRC522::WriteRawRC(unsigned char address, unsigned char value)
 	return true;
 }
 
+//发送一个地址为，得到一个数据
 unsigned char MFRC522::ReadRawRC(unsigned char address)
 {
 	double timeOut=tskmgr.Time();
 	unsigned char temp;
 	
 		mUsart->ClearReceiveBuffer();
-		address = (address&0x7F)|0x80;
+		address = (address&0x7F)|0x80; //数据高位为读写位
 		mUsart->SendData(&address,1);
 		while(mUsart->ReceiveBufferSize()<=0)
 		{
 			if(tskmgr.Time()-timeOut>0.010)//大于10ms判定是超时，时间可改
 				break;
-		}
-		
+		}		
 		mUsart->GetReceivedData(&temp,1);
 	return temp;
 }
@@ -74,6 +73,7 @@ void MFRC522::SetBitMask(unsigned char reg,unsigned char mask)
     tmp = ReadRawRC(reg);
     WriteRawRC(reg,tmp | mask);  // set bit mask
 }
+
 void MFRC522::PcdAntennaOn()
 {
 	unsigned char i;
@@ -83,7 +83,6 @@ void MFRC522::PcdAntennaOn()
         SetBitMask(MFRC522_TxControlReg, 0x03);
     }
 }
-
 void MFRC522::PcdAntennaOff()
 {
 	ClearBitMask(MFRC522_TxControlReg,0x03);//停止发送13.56MHz的载波
@@ -98,7 +97,6 @@ bool MFRC522::FindCard(unsigned char whichTag,unsigned char *pTagType)
 	ClearBitMask(MFRC522_Status2Reg,0x08);//清MIFAREe认证标志
 	WriteRawRC(MFRC522_BitFramingReg,0x07);//面向位的帧调节，置位最后一个字节的位数，当此标志位0时，代表数据发送完毕
 	SetBitMask(MFRC522_TxControlReg,0x03);//使能管脚TX1和TX2经载波后发送
-
 
 	status = PcdComPicc(MFRC522_PCD_TRANSCEIVE,&whichTag,1,ucComMF522Buf,&unLen);
 
@@ -219,7 +217,6 @@ bool MFRC522::PcdAntiColl(unsigned char *pSnr)
     ClearBitMask(MFRC522_Status2Reg,0x08);
     WriteRawRC(MFRC522_BitFramingReg,0x00);
     ClearBitMask(MFRC522_CollReg,0x80);
- 
     ucComMF522Buf[0] = MFRC522_PICC_ANTICOLL1;
     ucComMF522Buf[1] = 0x20;
 

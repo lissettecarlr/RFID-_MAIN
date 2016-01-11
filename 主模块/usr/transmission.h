@@ -9,7 +9,7 @@ class Transmission{
 		u8 ModuleToModule[20];
 		u8 ModuleToUser[20];
 		u8 command[8];
-		u8 info[40];
+		u8 info[20];
 	public:
 		Transmission();
 		u8 *MAINToUser(u8 data_H,u8 data_L,u8 adc,u32 moduleNO,u8 type);
